@@ -1,0 +1,7 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+- Always use bun.sh to build and run this project
+- use Typescript to build this project

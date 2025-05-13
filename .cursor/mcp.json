@@ -1,0 +1,26 @@
+{
+	"mcpServers": {
+	  "todo-service": {
+		"command": "wsl",
+		"args": [
+			"--exec",
+			"env",
+			"DATABASE_URL=postgresql://postgres:3uQzQXCCh9KffGxc7V2u@db.pfpdmvlvixzwidekocjo.supabase.co:5432/postgres",
+			"JWT_SECRET=todo-mcp",
+			"/home/grigri/.bun/bin/bun",
+			"run",
+			"/home/grigri/mcp/todo-mcp/index.ts"
+		],
+		"logStdErr": true
+	  },
+	  "test-service": {
+		"command": "wsl",
+		"args": [
+			"bash",
+			"-c",
+			"\"/home/grigri/.bun/bin/bun run /home/grigri/mcp/todo-mcp/server.ts\""
+		],
+		"logStdErr": true
+	  }
+	}
+  }
