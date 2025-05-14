@@ -60,7 +60,7 @@ export class TomlFileStorage implements IStorage {
     }
     const newTask: Task = {
       id: this.generateId(),
-      name: task.name || "Untitled Task",
+      title: task.title || "Untitled Task",
       summary: task.summary || "",
       description: task.description || "",
       // prompt, role, contexts will be undefined if not in task partial
@@ -132,7 +132,8 @@ export class TomlFileStorage implements IStorage {
     // and then selectively update with non-undefined values from taskUpdate.
     const updatedTask: Task = {
       id: existingTask.id, // id is always from existing
-      name: taskUpdate.name !== undefined ? taskUpdate.name : existingTask.name,
+      title:
+        taskUpdate.title !== undefined ? taskUpdate.title : existingTask.title,
       summary:
         taskUpdate.summary !== undefined
           ? taskUpdate.summary

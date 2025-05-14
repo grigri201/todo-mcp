@@ -53,7 +53,7 @@ describe("TaskRepo", () => {
   const createTaskData = (
     overrides: Partial<CreateTaskDto> = {}
   ): CreateTaskDto => ({
-    name: "Test Task",
+    title: "Test Task",
     summary: "Test Summary",
     description: "Test Description",
     prompt: "Test Prompt",
@@ -67,15 +67,15 @@ describe("TaskRepo", () => {
       const taskId = await taskRepo.create(data);
       const task = await taskRepo.find(taskId);
       expect(task).toBeDefined();
-      expect(task?.name).toBe(data.name);
+      expect(task?.title).toBe(data.title);
       expect(task?.parentId).toBeUndefined();
     });
 
     it("should create a task successfully with a valid parent", async () => {
-      const parentData = createTaskData({ name: "Parent Task" });
+      const parentData = createTaskData({ title: "Parent Task" });
       const parentId = await taskRepo.create(parentData);
 
-      const childData = createTaskData({ name: "Child Task", parentId });
+      const childData = createTaskData({ title: "Child Task", parentId });
       const childId = await taskRepo.create(childData);
       const childTask = await taskRepo.find(childId);
 
@@ -103,11 +103,11 @@ describe("TaskRepo", () => {
       // This test actually means: create G (grandparent), P (parent of G), then try C (child of P)
       // id=C, potentialParentId=P. Ancestors of P are G. If C == G, cycle.
 
-      const grandparentData = createTaskData({ name: "Grandparent" });
+      const grandparentData = createTaskData({ title: "Grandparent" });
       const grandparentIde = await taskRepo.create(grandparentData); // G
 
       const parentData = createTaskData({
-        name: "Parent",
+        title: "Parent",
         parentId: grandparentIde,
       });
       const parentId = await taskRepo.create(parentData); // P -> G
@@ -161,8 +161,8 @@ describe("TaskRepo", () => {
       // Ancestor of Z: X. Is X == X? Yes. Cycle.
 
       // Setup:
-      const taskAId = await taskRepo.create(createTaskData({ name: "A" }));
-      const taskBData = createTaskData({ name: "B", parentId: taskAId });
+      const taskAId = await taskRepo.create(createTaskData({ title: "A" }));
+      const taskBData = createTaskData({ title: "B", parentId: taskAId });
       const taskBId = await taskRepo.create(taskBData); // B -> A
 
       // To test create cycle, we'd need to try and create A again with parent B.
@@ -210,24 +210,26 @@ describe("TaskRepo", () => {
 
     beforeEach(async () => {
       // Setup a common structure: C -> B -> A
-      taskAId = await taskRepo.create(createTaskData({ name: "Task A" }));
+      taskAId = await taskRepo.create(createTaskData({ title: "Task A" }));
       taskBId = await taskRepo.create(
-        createTaskData({ name: "Task B", parentId: taskAId })
+        createTaskData({ title: "Task B", parentId: taskAId })
       );
       taskCId = await taskRepo.create(
-        createTaskData({ name: "Task C", parentId: taskBId })
+        createTaskData({ title: "Task C", parentId: taskBId })
       );
     });
 
     it("should update a task successfully with valid data (non-parentId fields)", async () => {
       const newName = "Updated Task A";
-      await taskRepo.update(taskAId, { name: newName });
+      await taskRepo.update(taskAId, { title: newName });
       const taskA = await taskRepo.find(taskAId);
-      expect(taskA?.name).toBe(newName);
+      expect(taskA?.title).toBe(newName);
     });
 
     it("should update a task parentId successfully if no cycle is formed", async () => {
-      const taskDId = await taskRepo.create(createTaskData({ name: "Task D" }));
+      const taskDId = await taskRepo.create(
+        createTaskData({ title: "Task D" })
+      );
       // Set A's parent to D (A -> D), C -> B -> A becomes C -> B -> A -> D
       await taskRepo.update(taskAId, { parentId: taskDId });
       const taskA = await taskRepo.find(taskAId);
@@ -274,14 +276,16 @@ describe("TaskRepo", () => {
     it("should throw Error if task to update does not exist", async () => {
       const nonExistentTaskId = randomUUID();
       await expect(
-        taskRepo.update(nonExistentTaskId, { name: "Non Existent" })
+        taskRepo.update(nonExistentTaskId, { title: "Non Existent" })
       ).rejects.toThrow(`Task with id ${nonExistentTaskId} not found.`);
     });
 
     it("should allow changing parent from one valid parent to another valid parent", async () => {
       // Structure: C -> B -> A
       // Create D
-      const taskDId = await taskRepo.create(createTaskData({ name: "Task D" }));
+      const taskDId = await taskRepo.create(
+        createTaskData({ title: "Task D" })
+      );
       // Change B's parent from A to D (B -> D)
       // Result: C -> B -> D, A is now top-level (or has other children not in this test)
       await taskRepo.update(taskBId, { parentId: taskDId });
@@ -339,11 +343,11 @@ describe("TaskRepo", () => {
       // Normally, the constructor calls _initializeRepo. If it was async and critical:
       // await (taskRepo as any)._initializeRepo();
 
-      taskAId = await taskRepo.create(createTaskData({ name: "Task A" })); // Top level
+      taskAId = await taskRepo.create(createTaskData({ title: "Task A" })); // Top level
       taskBId = await taskRepo.create(
-        createTaskData({ name: "Task B", parentId: taskAId })
+        createTaskData({ title: "Task B", parentId: taskAId })
       ); // Child of A
-      taskCId = await taskRepo.create(createTaskData({ name: "Task C" })); // Top level
+      taskCId = await taskRepo.create(createTaskData({ title: "Task C" })); // Top level
     });
 
     it("should list all top-level tasks if no parentId is provided", async () => {

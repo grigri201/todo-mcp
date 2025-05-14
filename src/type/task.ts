@@ -3,7 +3,7 @@ export type TaskStatus = "PENDING" | "DONE" | "DELETED";
 export interface Task {
   id: string;
   parentId?: string;
-  name: string; // 任务名称
+  title: string; // 任务名称
   summary: string; // 简明简介
   description: string; // 详细描述
   prompt: string; // 执行所用 prompt

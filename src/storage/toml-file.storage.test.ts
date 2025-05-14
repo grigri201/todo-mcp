@@ -66,7 +66,7 @@ describe("TomlFileStorage", () => {
       const initialTasks: Task[] = [
         {
           id: "1",
-          name: "Test Task 1",
+          title: "Test Task 1",
           summary: "",
           description: "",
           prompt: "",
@@ -91,7 +91,7 @@ describe("TomlFileStorage", () => {
         throw new Error("Test setup failed: task should be defined");
       }
 
-      expect(task.name).toBe("Test Task 1");
+      expect(task.title).toBe("Test Task 1");
       expect(task.createdAt).toBeInstanceOf(Date);
       expect(task.createdAt.toISOString()).toBe(now.toISOString());
     });
@@ -133,7 +133,7 @@ describe("TomlFileStorage", () => {
       const createdTask = await storage.createTask(partialTask);
 
       expect(createdTask.id).toBeDefined();
-      expect(createdTask.name).toBe("New Task");
+      expect(createdTask.title).toBe("New Task");
       expect(createdTask.summary).toBe(""); // Default value
       expect(createdTask.description).toBe(""); // Default value
       expect(createdTask.prompt).toBe(""); // Default value
@@ -148,13 +148,13 @@ describe("TomlFileStorage", () => {
       const task = tasks[0];
       if (!task) throw new Error("Task not found after creation");
       expect(task.id).toBe(createdTask.id);
-      expect(task.name).toBe("New Task");
+      expect(task.title).toBe("New Task");
     });
 
     test("should create a new task with all properties and save it", async () => {
       const now = new Date();
       const fullTaskData: Partial<Task> = {
-        name: "Full Task",
+        title: "Full Task",
         summary: "Task summary",
         description: "Task description",
         prompt: "Task prompt",
@@ -165,7 +165,7 @@ describe("TomlFileStorage", () => {
       const createdTask = await storage.createTask(fullTaskData);
 
       expect(createdTask.id).toBeDefined();
-      expect(createdTask.name).toBe("Full Task");
+      expect(createdTask.title).toBe("Full Task");
       expect(createdTask.summary).toBe("Task summary");
       expect(createdTask.status).toBe("PENDING"); // Check against the assigned status
       expect(createdTask.createdAt).toBeInstanceOf(Date);
@@ -184,7 +184,7 @@ describe("TomlFileStorage", () => {
     test("should throw an error if storage is not initialized", async () => {
       const uninitializedStorage = new TomlFileStorage();
       await expect(
-        uninitializedStorage.createTask({ name: "test" })
+        uninitializedStorage.createTask({ title: "test" })
       ).rejects.toThrow("Storage not initialized. Call init() first.");
     });
   });
@@ -200,35 +200,35 @@ describe("TomlFileStorage", () => {
     });
 
     test("should return all tasks if no parentId is provided", async () => {
-      await storage.createTask({ name: "Task 1" });
-      await storage.createTask({ name: "Task 2" });
+      await storage.createTask({ title: "Task 1" });
+      await storage.createTask({ title: "Task 2" });
       const tasks = await storage.getTasks();
       expect(tasks.length).toBe(2);
-      expect(tasks.find((t) => t.name === "Task 1")).toBeDefined();
-      expect(tasks.find((t) => t.name === "Task 2")).toBeDefined();
+      expect(tasks.find((t) => t.title === "Task 1")).toBeDefined();
+      expect(tasks.find((t) => t.title === "Task 2")).toBeDefined();
     });
 
     test("should return only tasks with the specified parentId", async () => {
-      const parentTask = await storage.createTask({ name: "Parent Task" });
+      const parentTask = await storage.createTask({ title: "Parent Task" });
       await storage.createTask({
-        name: "Child Task 1",
+        title: "Child Task 1",
         parentId: parentTask.id,
       });
       await storage.createTask({
-        name: "Child Task 2",
+        title: "Child Task 2",
         parentId: parentTask.id,
       });
-      await storage.createTask({ name: "Orphan Task" }); // No parentId
+      await storage.createTask({ title: "Orphan Task" }); // No parentId
 
       const childTasks = await storage.getTasks(parentTask.id);
       expect(childTasks.length).toBe(2);
       expect(childTasks.every((t) => t.parentId === parentTask.id)).toBe(true);
-      expect(childTasks.find((t) => t.name === "Child Task 1")).toBeDefined();
-      expect(childTasks.find((t) => t.name === "Child Task 2")).toBeDefined();
+      expect(childTasks.find((t) => t.title === "Child Task 1")).toBeDefined();
+      expect(childTasks.find((t) => t.title === "Child Task 2")).toBeDefined();
     });
 
     test("should return an empty array if parentId is specified but no tasks match", async () => {
-      await storage.createTask({ name: "Task 1" });
+      await storage.createTask({ title: "Task 1" });
       const tasks = await storage.getTasks("non-existent-parent-id");
       expect(tasks).toEqual([]);
     });
@@ -247,14 +247,14 @@ describe("TomlFileStorage", () => {
     beforeEach(async () => {
       await storage.init({ filePath: TEST_FILE_PATH });
       initialTask = await storage.createTask({
-        name: "Initial Task",
+        title: "Initial Task",
         summary: "Initial Summary",
       });
     });
 
     test("should update an existing task and return the updated task", async () => {
       const updates: Partial<Task> = {
-        name: "Updated Task Name",
+        title: "Updated Task Name",
         summary: "Updated Summary",
         status: "DONE",
       };
@@ -265,7 +265,7 @@ describe("TomlFileStorage", () => {
       const updatedTask = await storage.updateTask(initialTask.id, updates);
 
       expect(updatedTask.id).toBe(initialTask.id);
-      expect(updatedTask.name).toBe("Updated Task Name");
+      expect(updatedTask.title).toBe("Updated Task Name");
       expect(updatedTask.summary).toBe("Updated Summary");
       expect(updatedTask.status).toBe("DONE");
       expect(updatedTask.createdAt.toISOString()).toBe(
@@ -281,7 +281,7 @@ describe("TomlFileStorage", () => {
       );
       expect(taskInStorage).toBeDefined();
       if (!taskInStorage) throw new Error("Task not in storage after update");
-      expect(taskInStorage.name).toBe("Updated Task Name");
+      expect(taskInStorage.title).toBe("Updated Task Name");
       expect(taskInStorage.status).toBe("DONE");
     });
 
@@ -289,14 +289,14 @@ describe("TomlFileStorage", () => {
       const updates: Partial<Task> = { summary: "Only Summary Updated" };
       const updatedTask = await storage.updateTask(initialTask.id, updates);
 
-      expect(updatedTask.name).toBe(initialTask.name); // Should remain "Initial Task"
+      expect(updatedTask.title).toBe(initialTask.title); // Should remain "Initial Task"
       expect(updatedTask.summary).toBe("Only Summary Updated");
       expect(updatedTask.status).toBe(initialTask.status); // Should remain PENDING (default)
     });
 
     test("should throw an error if trying to update a non-existent task", async () => {
       await expect(
-        storage.updateTask("non-existent-id", { name: "test" })
+        storage.updateTask("non-existent-id", { title: "test" })
       ).rejects.toThrow('Task with id "non-existent-id" not found.');
     });
 
@@ -304,7 +304,7 @@ describe("TomlFileStorage", () => {
       const uninitializedStorage = new TomlFileStorage();
       // No need to create a task as init itself will be the point of failure for accessing filePath
       await expect(
-        uninitializedStorage.updateTask("any-id", { name: "test" })
+        uninitializedStorage.updateTask("any-id", { title: "test" })
       ).rejects.toThrow("Storage not initialized. Call init() first.");
     });
   });
@@ -314,9 +314,9 @@ describe("TomlFileStorage", () => {
 
     beforeEach(async () => {
       await storage.init({ filePath: TEST_FILE_PATH });
-      taskToDelete = await storage.createTask({ name: "Task to Delete" });
+      taskToDelete = await storage.createTask({ title: "Task to Delete" });
       // Add another task to ensure only the specified one is deleted
-      await storage.createTask({ name: "Another Task" });
+      await storage.createTask({ title: "Another Task" });
     });
 
     test("should delete an existing task", async () => {
@@ -331,7 +331,7 @@ describe("TomlFileStorage", () => {
           "Test logic error: remaining task should be defined after deletion."
         );
       }
-      expect(remainingTask.name).toBe("Another Task");
+      expect(remainingTask.title).toBe("Another Task");
     });
 
     test("should not throw an error if trying to delete a non-existent task (idempotency)", async () => {

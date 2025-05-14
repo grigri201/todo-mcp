@@ -1,5 +1,6 @@
-import type { Task, TaskStatus } from "../type/task";
+import type { Task } from "../type/task";
 import { randomUUID } from "crypto";
+import type { IStorage } from "./storage";
 
 // Custom Error Classes
 export class ParentNotFoundError extends Error {
@@ -32,19 +33,9 @@ export class CycleError extends Error {
   }
 }
 
-// Placeholder IStorage interface
-// This should be replaced or defined according to your TomlFileStorage implementation
-export interface IStorage<T extends { id: string }> {
-  readAll(): Promise<Record<string, T>>;
-  writeAll(data: Record<string, T>): Promise<void>;
-  read(id: string): Promise<T | undefined>;
-  write(id: string, entity: T): Promise<void>;
-  delete(id: string): Promise<void>;
-}
-
 // DTO for creating a task
 export interface CreateTaskDto {
-  name: string;
+  title: string;
   summary: string;
   description: string;
   prompt: string;
@@ -59,13 +50,13 @@ export interface CreateTaskDto {
  */
 export class TaskRepo {
   private tasks: Map<string, Task>;
-  private storage: IStorage<Task>;
+  private storage: IStorage;
 
   /**
    * Creates an instance of TaskRepo.
-   * @param {IStorage<Task>} storage - The storage instance to persist tasks.
+   * @param {IStorage} storage - The storage instance to persist tasks.
    */
-  constructor(storage: IStorage<Task>) {
+  constructor(storage: IStorage) {
     this.storage = storage;
     this.tasks = new Map<string, Task>();
     this._initializeRepo();
@@ -73,7 +64,7 @@ export class TaskRepo {
 
   private async _initializeRepo(): Promise<void> {
     try {
-      const allTasks = await this.storage.readAll();
+      const allTasks = await this.storage.getTasks();
       this.tasks = new Map(Object.entries(allTasks));
     } catch (error) {
       console.error("Failed to initialize TaskRepo from storage:", error);
@@ -84,7 +75,7 @@ export class TaskRepo {
   private async _persistTask(task: Task): Promise<void> {
     this.tasks.set(task.id, task);
     // Individual write is likely better for atomicity if supported well by IStorage
-    await this.storage.write(task.id, task);
+    await this.storage.createTask(task);
   }
 
   // This method might be useful if the storage engine prefers bulk updates
@@ -98,7 +89,7 @@ export class TaskRepo {
 
   private async _removeTaskFromPersistence(taskId: string): Promise<void> {
     this.tasks.delete(taskId);
-    await this.storage.delete(taskId);
+    await this.storage.deleteTask(taskId);
   }
 
   /**
@@ -144,7 +135,7 @@ export class TaskRepo {
    */
   async create(taskData: CreateTaskDto): Promise<string> {
     const requiredFields: Array<keyof CreateTaskDto> = [
-      "name",
+      "title",
       "summary",
       "description",
       "prompt",
@@ -301,5 +292,10 @@ export class TaskRepo {
     // If childrenIds on the parent is the source of truth for children, this logic would change.
     // For now, this is consistent with the request for `list(parentId?)`
     return allTasks.filter((task) => task.parentId === parentId);
+  }
+
+  async firstTask(parentId?: string) {
+    const tasks = await this.list(parentId);
+    return tasks[0];
   }
 }
