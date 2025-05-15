@@ -16,7 +16,7 @@ const server = new McpServer({
 
 function composeTaskString(task: Task): string {
   return `
-context: ${task.contexts.join("\n")}
+context: ${task.context.join("\n")}
 
 title: ${task.title}
 summary: ${task.summary}
@@ -178,7 +178,7 @@ async function registerMcpHandlers(server: McpServer) {
     },
     async ({ id }) => {
       try {
-        await taskRepo.update(id, { status: "DONE" });
+        await taskRepo.update(id, { is_complted: "DONE" });
         return {
           content: [{ type: "text", text: `Task ${id} marked as completed.` }],
         };

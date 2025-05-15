@@ -62,6 +62,17 @@ export class TaskRepo {
     this._initializeRepo();
   }
 
+  private formatTask(task: Partial<Task>): string {
+    const title = task.title || "";
+    const context = task.context || "";
+    const prompt = task.prompt || "";
+    return `title: ${title}
+context:
+${context}
+prompt:
+${prompt}`;
+  }
+
   private async _initializeRepo(): Promise<void> {
     try {
       const allTasks = await this.storage.getTasks();
@@ -164,10 +175,8 @@ export class TaskRepo {
       id,
       // parentId, name, summary, description, prompt, role are from taskData
       ...taskData,
-      contexts: taskData.contexts || [],
-      status: "PENDING", // Default status
-      createdAt: now,
-      updatedAt: now,
+      context: taskData.contexts?.join("\n") || "",
+      is_completed: false,
     };
 
     await this._persistTask(newTask);
@@ -184,7 +193,7 @@ export class TaskRepo {
     // If direct storage reads are needed for freshness, this could change:
     // return await this.storage.read(id);
     const task = this.tasks.get(id);
-    if (task && task.status === "PENDING") {
+    if (task && !task.is_completed) {
       return task;
     }
     return undefined;
@@ -206,7 +215,7 @@ export class TaskRepo {
   async update(
     id: string,
     patch: Partial<
-      Omit<Task, "id" | "createdAt" | "updatedAt"> // Allow parentId and status to be updated
+      Omit<Task, "id"> // createdAt/updatedAt are not in Task, so Omit has no effect on them here
     >
   ): Promise<void> {
     const task = await this.find(id);
@@ -214,37 +223,35 @@ export class TaskRepo {
       throw new Error(`Task with id ${id} not found.`);
     }
 
-    // Create updated task, ensuring not to spread undefined values from patch that might overwrite existing fields with undefined.
     const updatedTask: Task = { ...task };
 
     // Apply patch carefully
     for (const key in patch) {
       if (patch.hasOwnProperty(key)) {
         const typedKey = key as keyof typeof patch;
-        if (patch[typedKey] !== undefined) {
-          // Specific handling for parentId update
+        const value = patch[typedKey];
+
+        if (value !== undefined) {
           if (typedKey === "parentId") {
-            const newParentId = patch[typedKey] as string | undefined;
+            const newParentId = value as string | undefined;
             if (newParentId !== task.parentId) {
-              // Only check if parentId is actually changing
               if (newParentId) {
-                // If setting a new parent
-                const parentTask = await this.find(newParentId);
-                if (!parentTask) {
+                const parentTaskExists = await this.find(newParentId);
+                if (!parentTaskExists) {
                   throw new ParentNotFoundError(newParentId);
                 }
                 await this._checkForCycle(id, newParentId);
               }
-              // If newParentId is undefined, it means we are detaching it from its parent. No cycle check needed.
-              (updatedTask as any)[typedKey] = newParentId;
+              updatedTask.parentId = newParentId;
             }
           } else {
-            (updatedTask as any)[typedKey] = patch[typedKey];
+            // Directly assign other valid Task properties from patch
+            // This includes title, prompt, role, context (as string), is_completed (as boolean)
+            (updatedTask as any)[typedKey] = value;
           }
         }
       }
     }
-    updatedTask.updatedAt = new Date();
 
     await this._persistTask(updatedTask);
   }
@@ -294,15 +301,12 @@ export class TaskRepo {
     if (parentId === undefined) {
       filteredByParentTasks = allTasks.filter((task) => !task.parentId);
     } else {
-      // This lists tasks that have parentId set to the given parentId.
-      // If childrenIds on the parent is the source of truth for children, this logic would change.
-      // For now, this is consistent with the request for `list(parentId?)`
       filteredByParentTasks = allTasks.filter(
         (task) => task.parentId === parentId
       );
     }
-    // Further filter by status
-    return filteredByParentTasks.filter((task) => task.status === "PENDING");
+    // Further filter by status - assuming "pending" means is_completed is false
+    return filteredByParentTasks.filter((task) => !task.is_completed);
   }
 
   async firstTask(parentId?: string) {

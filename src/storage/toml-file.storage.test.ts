@@ -71,8 +71,8 @@ describe("TomlFileStorage", () => {
           description: "",
           prompt: "",
           role: "",
-          contexts: [],
-          status: "PENDING",
+          context: [],
+          is_complted: "PENDING",
           createdAt: now,
           updatedAt: now,
         },
@@ -138,8 +138,8 @@ describe("TomlFileStorage", () => {
       expect(createdTask.description).toBe(""); // Default value
       expect(createdTask.prompt).toBe(""); // Default value
       expect(createdTask.role).toBe(""); // Default value
-      expect(createdTask.contexts).toEqual([]); // Default value
-      expect(createdTask.status).toBe("PENDING"); // Default value
+      expect(createdTask.context).toEqual([]); // Default value
+      expect(createdTask.is_complted).toBe("PENDING"); // Default value
       expect(createdTask.createdAt).toBeInstanceOf(Date);
       expect(createdTask.updatedAt).toBeInstanceOf(Date);
 
@@ -159,15 +159,15 @@ describe("TomlFileStorage", () => {
         description: "Task description",
         prompt: "Task prompt",
         role: "Task role",
-        contexts: [], // Changed to empty array to avoid type conflict for now
-        status: "PENDING", // Changed to 'PENDING' as it's a known valid status
+        context: [], // Changed to empty array to avoid type conflict for now
+        is_complted: "PENDING", // Changed to 'PENDING' as it's a known valid status
       };
       const createdTask = await storage.createTask(fullTaskData);
 
       expect(createdTask.id).toBeDefined();
       expect(createdTask.title).toBe("Full Task");
       expect(createdTask.summary).toBe("Task summary");
-      expect(createdTask.status).toBe("PENDING"); // Check against the assigned status
+      expect(createdTask.is_complted).toBe("PENDING"); // Check against the assigned status
       expect(createdTask.createdAt).toBeInstanceOf(Date);
       expect(createdTask.updatedAt).toBeInstanceOf(Date);
       expect(createdTask.createdAt.getTime()).toBeGreaterThanOrEqual(
@@ -256,7 +256,7 @@ describe("TomlFileStorage", () => {
       const updates: Partial<Task> = {
         title: "Updated Task Name",
         summary: "Updated Summary",
-        status: "DONE",
+        is_complted: "DONE",
       };
 
       // Wait for a short period to ensure updatedAt will be different
@@ -267,7 +267,7 @@ describe("TomlFileStorage", () => {
       expect(updatedTask.id).toBe(initialTask.id);
       expect(updatedTask.title).toBe("Updated Task Name");
       expect(updatedTask.summary).toBe("Updated Summary");
-      expect(updatedTask.status).toBe("DONE");
+      expect(updatedTask.is_complted).toBe("DONE");
       expect(updatedTask.createdAt.toISOString()).toBe(
         initialTask.createdAt.toISOString()
       ); // Should not change
@@ -282,7 +282,7 @@ describe("TomlFileStorage", () => {
       expect(taskInStorage).toBeDefined();
       if (!taskInStorage) throw new Error("Task not in storage after update");
       expect(taskInStorage.title).toBe("Updated Task Name");
-      expect(taskInStorage.status).toBe("DONE");
+      expect(taskInStorage.is_complted).toBe("DONE");
     });
 
     test("should only update provided fields, keeping others intact", async () => {
@@ -291,7 +291,7 @@ describe("TomlFileStorage", () => {
 
       expect(updatedTask.title).toBe(initialTask.title); // Should remain "Initial Task"
       expect(updatedTask.summary).toBe("Only Summary Updated");
-      expect(updatedTask.status).toBe(initialTask.status); // Should remain PENDING (default)
+      expect(updatedTask.is_complted).toBe(initialTask.is_complted); // Should remain PENDING (default)
     });
 
     test("should throw an error if trying to update a non-existent task", async () => {

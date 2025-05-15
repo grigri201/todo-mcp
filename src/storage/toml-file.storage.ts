@@ -67,8 +67,8 @@ export class TomlFileStorage implements IStorage {
       // but this is fine as they are not required for a minimal Task
       prompt: task.prompt || "", // Add default for prompt
       role: task.role || "", // Add default for role
-      contexts: task.contexts || [], // Add default for contexts
-      status: task.status || "PENDING", // Corrected default status
+      context: task.context || [], // Add default for contexts
+      is_complted: task.is_complted || "PENDING", // Corrected default status
       createdAt: new Date(),
       updatedAt: new Date(),
       // Spread the partial task to override defaults.
@@ -147,14 +147,14 @@ export class TomlFileStorage implements IStorage {
           ? taskUpdate.prompt
           : existingTask.prompt,
       role: taskUpdate.role !== undefined ? taskUpdate.role : existingTask.role,
-      contexts:
-        taskUpdate.contexts !== undefined
-          ? taskUpdate.contexts
-          : existingTask.contexts,
-      status:
-        taskUpdate.status !== undefined
-          ? taskUpdate.status
-          : existingTask.status,
+      context:
+        taskUpdate.context !== undefined
+          ? taskUpdate.context
+          : existingTask.context,
+      is_complted:
+        taskUpdate.is_complted !== undefined
+          ? taskUpdate.is_complted
+          : existingTask.is_complted,
       createdAt: existingTask.createdAt, // createdAt is from existing
       // parentId can be updated if present in taskUpdate, otherwise keep existing
       parentId:
