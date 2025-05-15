@@ -1,1 +1,230 @@
-tasks = [ ]
+[[tasks]]
+id = "7e835c28-cb90-469e-ba65-fa513a470884"
+title = "Investigate resource registration failure"
+summary = "Check why the resource did not register successfully."
+description = "A resource failed to register. This task is to investigate the root cause and identify a solution."
+prompt = "添加一个任务，检查为何 resouce 没有注册成功。并帮我分解成子任务"
+role = "system"
+contexts = [ ]
+status = "PENDING"
+createdAt = 2025-05-14T13:28:24.842Z
+updatedAt = 2025-05-14T13:28:24.842Z
+
+[[tasks]]
+id = "62897fc3-08c5-4a68-b87c-0019d53587a5"
+title = "Review recent code changes"
+summary = "Check if recent code modifications caused the issue."
+description = "Examine recent commits or deployments related to resource management or the specific resource in question to see if any changes could have led to the registration failure."
+prompt = "Sub-task for investigating resource registration failure"
+role = "system"
+contexts = [ ]
+status = "PENDING"
+parentId = "7e835c28-cb90-469e-ba65-fa513a470884"
+createdAt = 2025-05-14T13:28:36.081Z
+updatedAt = 2025-05-14T13:28:36.081Z
+
+[[tasks]]
+id = "e2fec469-8953-43b4-bc21-2799577a330c"
+title = "Check application logs for errors"
+summary = "Look for errors in application logs related to resource registration."
+description = "Check application logs, system logs, and any relevant service logs for error messages or warnings that occurred around the time of the registration attempt."
+prompt = "Sub-task for investigating resource registration failure"
+role = "system"
+contexts = [ ]
+status = "PENDING"
+parentId = "7e835c28-cb90-469e-ba65-fa513a470884"
+createdAt = 2025-05-14T13:28:44.393Z
+updatedAt = 2025-05-14T13:28:44.393Z
+
+[[tasks]]
+id = "f56e8e99-69a4-43f9-9abb-af778302c810"
+title = "Verify resource configuration"
+summary = "Verify the resource's configuration parameters."
+description = "Ensure that the resource is configured correctly according to documentation or expected setup. Check all configuration files, environment variables, and database settings related to the resource."
+prompt = "Sub-task for investigating resource registration failure"
+role = "system"
+contexts = [ ]
+status = "PENDING"
+parentId = "7e835c28-cb90-469e-ba65-fa513a470884"
+createdAt = 2025-05-14T13:28:52.967Z
+updatedAt = 2025-05-14T13:28:52.967Z
+
+[[tasks]]
+id = "58109c91-7c69-4dba-9aaf-2cc71555e737"
+title = "Check dependencies"
+summary = "Ensure all necessary dependencies are operational."
+description = "Confirm that all dependencies required for the resource to register (e.g., databases, messaging queues, other services) are available, running, and healthy."
+prompt = "Sub-task for investigating resource registration failure"
+role = "system"
+contexts = [ ]
+status = "PENDING"
+parentId = "7e835c28-cb90-469e-ba65-fa513a470884"
+createdAt = 2025-05-14T13:28:57.298Z
+updatedAt = 2025-05-14T13:28:57.298Z
+
+[[tasks]]
+id = "5fd74960-753c-4945-b4ea-bbe0d6fa48c7"
+title = "Inspect network connectivity"
+summary = "Check for network issues if registration is remote."
+description = "If the resource registration process involves network communication (e.g., registering with a central service), check for network connectivity issues, firewall rules, DNS problems, or certificate errors."
+prompt = "Sub-task for investigating resource registration failure"
+role = "system"
+contexts = [ ]
+status = "PENDING"
+parentId = "7e835c28-cb90-469e-ba65-fa513a470884"
+createdAt = 2025-05-14T13:28:59.719Z
+updatedAt = 2025-05-14T13:28:59.719Z
+
+[[tasks]]
+id = "581298f5-affd-4e58-a6a4-a574c75ff990"
+title = "编写 todo-mcp 文档和使用例子"
+summary = "为 todo-mcp 项目创建全面的文档和实际使用示例。"
+description = "此任务包括规划、编写和审查 todo-mcp 项目的文档。文档应涵盖 API 参考、快速入门指南、教程和代码示例，以帮助用户理解和使用该项目。"
+prompt = "请为 todo-mcp 项目创建一套完整的用户文档，包括 API 描述、入门指南和多个使用场景的代码示例。确保文档清晰、准确且易于遵循。"
+role = "documentation_writer"
+contexts = [ ]
+status = "PENDING"
+createdAt = 2025-05-15T01:53:24.447Z
+updatedAt = 2025-05-15T01:53:24.447Z
+
+[[tasks]]
+id = "c23b9a8e-1d37-468e-aab6-937a1ae19cde"
+title = "设计文档结构"
+summary = "规划和设计 todo-mcp 文档的整体结构和布局。"
+description = "确定文档的主要章节、内容组织方式以及导航流程，确保用户可以轻松找到所需信息。"
+prompt = "请为 todo-mcp 文档设计一个清晰、有逻辑的结构。列出主要章节和子章节，并简要说明每个部分的内容。"
+role = "documentation_architect"
+contexts = [ ]
+status = "PENDING"
+createdAt = 2025-05-15T01:53:27.933Z
+updatedAt = 2025-05-15T01:53:27.933Z
+parentId = "581298f5-affd-4e58-a6a4-a574c75ff990"
+
+[[tasks]]
+id = "008f512d-3598-44e8-93fe-f8a639b8ce2a"
+title = "编写 API 文档"
+summary = "详细记录 todo-mcp 的所有 API 端点、参数和返回值。"
+description = "为每个 API 端点提供清晰的描述、请求/响应示例和用法说明。"
+prompt = "请为 todo-mcp 的所有公共 API 编写详细文档。包括每个函数的用途、参数、返回值和使用示例。"
+role = "technical_writer"
+contexts = [ ]
+status = "PENDING"
+createdAt = 2025-05-15T01:53:31.074Z
+updatedAt = 2025-05-15T01:53:31.074Z
+parentId = "581298f5-affd-4e58-a6a4-a574c75ff990"
+
+[[tasks]]
+id = "07620037-e31a-4525-8e27-f8ef0b49c308"
+title = "编写快速入门指南"
+summary = "为新用户创建一个简洁明了的快速入门指南。"
+description = "指导用户完成 todo-mcp 的基本安装、配置和核心功能使用，帮助他们快速上手。"
+prompt = "请编写一份快速入门指南，帮助新用户在 15 分钟内了解并开始使用 todo-mcp 的基本功能。"
+role = "technical_writer"
+contexts = [ ]
+status = "PENDING"
+createdAt = 2025-05-15T01:53:34.024Z
+updatedAt = 2025-05-15T01:53:34.024Z
+parentId = "581298f5-affd-4e58-a6a4-a574c75ff990"
+
+[[tasks]]
+id = "a422cd36-fee4-4d72-a079-3a2eaa30e338"
+title = "创建代码示例"
+summary = "为 todo-mcp 的关键功能和常见用例编写代码示例。"
+description = "提供可在实际项目中直接使用或参考的代码片段，演示如何集成和使用 todo-mcp。"
+prompt = "请为 todo-mcp 的主要功能（例如任务创建、更新、列出、子任务管理）创建清晰、可运行的代码示例。示例应涵盖不同场景。"
+role = "developer_advocate"
+contexts = [ ]
+status = "PENDING"
+createdAt = 2025-05-15T01:53:37.002Z
+updatedAt = 2025-05-15T01:53:37.002Z
+parentId = "581298f5-affd-4e58-a6a4-a574c75ff990"
+
+[[tasks]]
+id = "4db9d61a-65e3-45fe-9c60-fe16c4c04dd3"
+title = "审查和修订文档"
+summary = "校对、审查并修订整个 todo-mcp 文档，确保其质量。"
+description = "检查文档的准确性、清晰度、完整性和一致性，修正错误和改进表达。"
+prompt = "请仔细审查所有编写的 todo-mcp 文档内容，包括 API 文档、快速入门和示例代码。检查技术准确性、语法、拼写和整体可读性，并进行必要的修订。"
+role = "editor"
+contexts = [ ]
+status = "PENDING"
+createdAt = 2025-05-15T01:53:40.930Z
+updatedAt = 2025-05-15T01:53:40.930Z
+parentId = "581298f5-affd-4e58-a6a4-a574c75ff990"
+
+[[tasks]]
+id = "c23b9a8e-1d37-468e-aab6-937a1ae19cde"
+title = "设计文档结构"
+summary = "规划和设计 todo-mcp 文档的整体结构和布局。"
+description = "确定文档的主要章节、内容组织方式以及导航流程，确保用户可以轻松找到所需信息。"
+prompt = "请为 todo-mcp 文档设计一个清晰、有逻辑的结构。列出主要章节和子章节，并简要说明每个部分的内容。"
+role = "documentation_architect"
+contexts = [ ]
+status = "DONE"
+createdAt = 2025-05-15T01:53:27.933Z
+updatedAt = 2025-05-15T01:56:19.339Z
+parentId = "581298f5-affd-4e58-a6a4-a574c75ff990"
+
+[[tasks]]
+id = "008f512d-3598-44e8-93fe-f8a639b8ce2a"
+title = "编写 API 文档"
+summary = "详细记录 todo-mcp 的所有 API 端点、参数和返回值。"
+description = "为每个 API 端点提供清晰的描述、请求/响应示例和用法说明。"
+prompt = "请为 todo-mcp 的所有公共 API 编写详细文档。包括每个函数的用途、参数、返回值和使用示例。"
+role = "technical_writer"
+contexts = [ ]
+status = "DONE"
+createdAt = 2025-05-15T01:53:31.074Z
+updatedAt = 2025-05-15T01:58:59.817Z
+parentId = "581298f5-affd-4e58-a6a4-a574c75ff990"
+
+[[tasks]]
+id = "07620037-e31a-4525-8e27-f8ef0b49c308"
+title = "编写快速入门指南"
+summary = "为新用户创建一个简洁明了的快速入门指南。"
+description = "指导用户完成 todo-mcp 的基本安装、配置和核心功能使用，帮助他们快速上手。"
+prompt = "请编写一份快速入门指南，帮助新用户在 15 分钟内了解并开始使用 todo-mcp 的基本功能。"
+role = "technical_writer"
+contexts = [ ]
+status = "DONE"
+createdAt = 2025-05-15T01:53:34.024Z
+updatedAt = 2025-05-15T01:59:40.321Z
+parentId = "581298f5-affd-4e58-a6a4-a574c75ff990"
+
+[[tasks]]
+id = "a422cd36-fee4-4d72-a079-3a2eaa30e338"
+title = "创建代码示例"
+summary = "为 todo-mcp 的关键功能和常见用例编写代码示例。"
+description = "提供可在实际项目中直接使用或参考的代码片段，演示如何集成和使用 todo-mcp。"
+prompt = "请为 todo-mcp 的主要功能（例如任务创建、更新、列出、子任务管理）创建清晰、可运行的代码示例。示例应涵盖不同场景。"
+role = "developer_advocate"
+contexts = [ ]
+status = "DONE"
+createdAt = 2025-05-15T01:53:37.002Z
+updatedAt = 2025-05-15T02:02:43.330Z
+parentId = "581298f5-affd-4e58-a6a4-a574c75ff990"
+
+[[tasks]]
+id = "4db9d61a-65e3-45fe-9c60-fe16c4c04dd3"
+title = "审查和修订文档"
+summary = "校对、审查并修订整个 todo-mcp 文档，确保其质量。"
+description = "检查文档的准确性、清晰度、完整性和一致性，修正错误和改进表达。"
+prompt = "请仔细审查所有编写的 todo-mcp 文档内容，包括 API 文档、快速入门和示例代码。检查技术准确性、语法、拼写和整体可读性，并进行必要的修订。"
+role = "editor"
+contexts = [ ]
+status = "DONE"
+createdAt = 2025-05-15T01:53:40.930Z
+updatedAt = 2025-05-15T02:03:47.053Z
+parentId = "581298f5-affd-4e58-a6a4-a574c75ff990"
+
+[[tasks]]
+id = "581298f5-affd-4e58-a6a4-a574c75ff990"
+title = "编写 todo-mcp 文档和使用例子"
+summary = "为 todo-mcp 项目创建全面的文档和实际使用示例。"
+description = "此任务包括规划、编写和审查 todo-mcp 项目的文档。文档应涵盖 API 参考、快速入门指南、教程和代码示例，以帮助用户理解和使用该项目。"
+prompt = "请为 todo-mcp 项目创建一套完整的用户文档，包括 API 描述、入门指南和多个使用场景的代码示例。确保文档清晰、准确且易于遵循。"
+role = "documentation_writer"
+contexts = [ ]
+status = "DONE"
+createdAt = 2025-05-15T01:53:24.447Z
+updatedAt = 2025-05-15T02:03:52.351Z

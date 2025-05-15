@@ -32,45 +32,6 @@ async function registerMcpHandlers(server: McpServer) {
 
   const taskRepo = new TaskRepo(tomlFileStorage);
 
-  // resources
-  server.resource(
-    "tasks",
-    new ResourceTemplate("tasks://{parentId}/all", { list: undefined }),
-    async (uri: URL, { parentId }: { parentId?: string }) => {
-      const tasks = await taskRepo.list(parentId);
-      return {
-        uri: uri.href,
-        contents: tasks.map((task) => ({
-          uri: uri.href + "/" + task.id,
-          text: composeTaskString(task),
-        })),
-      };
-    }
-  );
-
-  server.resource(
-    "first task",
-    new ResourceTemplate("tasks://{parentId}/first", { list: undefined }),
-    async (uri: URL, { parentId }: { parentId?: string }) => {
-      const task = await taskRepo.firstTask(parentId);
-      if (!task) {
-        return {
-          uri: uri.href,
-          contents: [],
-        };
-      }
-      return {
-        uri: uri.href,
-        contents: [
-          {
-            uri: "tasks://" + task.id,
-            text: composeTaskString(task),
-          },
-        ],
-      };
-    }
-  );
-
   // tools
   // addTask tool
   server.tool(
@@ -231,6 +192,49 @@ async function registerMcpHandlers(server: McpServer) {
           ],
         };
       }
+    }
+  );
+
+  // tools (formerly resources)
+  server.tool(
+    "listTasks",
+    {
+      parentId: z.string().optional(),
+    },
+    async ({ parentId }: { parentId?: string }) => {
+      const tasks = await taskRepo.list(parentId);
+      if (tasks.length === 0) {
+        return {
+          content: [{ type: "text", text: "No tasks found." }],
+        };
+      }
+      const tasksString = tasks
+        .map((task) => `Task ID: ${task.id}\n${composeTaskString(task)}`)
+        .join("\n\n---\n\n");
+      return {
+        content: [{ type: "text", text: tasksString }],
+      };
+    }
+  );
+
+  server.tool(
+    "getFirstTask",
+    {
+      parentId: z.string().optional(),
+    },
+    async ({ parentId }: { parentId?: string }) => {
+      const task = await taskRepo.firstTask(parentId);
+      if (!task) {
+        return {
+          content: [
+            { type: "text", text: "No task found matching the criteria." },
+          ],
+        };
+      }
+      const taskString = `Task ID: ${task.id}\n${composeTaskString(task)}`;
+      return {
+        content: [{ type: "text", text: taskString }],
+      };
     }
   );
 }

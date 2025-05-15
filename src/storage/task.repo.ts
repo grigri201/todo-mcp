@@ -113,7 +113,8 @@ export class TaskRepo {
       if (currentAncestorId === taskId) {
         throw new CycleError(taskId, potentialParentId);
       }
-      const ancestorTask = await this.find(currentAncestorId);
+      // Directly access tasks map to bypass status filtering in find() for cycle detection
+      const ancestorTask = this.tasks.get(currentAncestorId);
       if (!ancestorTask) {
         // This case should ideally not be reached if data integrity is maintained
         // (e.g., parent exists checks are done prior or parentId is valid).
@@ -182,7 +183,11 @@ export class TaskRepo {
     // Assuming this.tasks is the source of truth after _initializeRepo
     // If direct storage reads are needed for freshness, this could change:
     // return await this.storage.read(id);
-    return this.tasks.get(id);
+    const task = this.tasks.get(id);
+    if (task && task.status === "PENDING") {
+      return task;
+    }
+    return undefined;
   }
 
   /**
@@ -285,13 +290,19 @@ export class TaskRepo {
       await this._initializeRepo();
     }
     const allTasks = Array.from(this.tasks.values());
+    let filteredByParentTasks: Task[];
     if (parentId === undefined) {
-      return allTasks.filter((task) => !task.parentId);
+      filteredByParentTasks = allTasks.filter((task) => !task.parentId);
+    } else {
+      // This lists tasks that have parentId set to the given parentId.
+      // If childrenIds on the parent is the source of truth for children, this logic would change.
+      // For now, this is consistent with the request for `list(parentId?)`
+      filteredByParentTasks = allTasks.filter(
+        (task) => task.parentId === parentId
+      );
     }
-    // This lists tasks that have parentId set to the given parentId.
-    // If childrenIds on the parent is the source of truth for children, this logic would change.
-    // For now, this is consistent with the request for `list(parentId?)`
-    return allTasks.filter((task) => task.parentId === parentId);
+    // Further filter by status
+    return filteredByParentTasks.filter((task) => task.status === "PENDING");
   }
 
   async firstTask(parentId?: string) {
