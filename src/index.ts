@@ -1,5 +1,4 @@
 import * as path from "path";
-import { fileURLToPath } from "url";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { useTaskManagementTool } from "./tools";
@@ -11,8 +10,7 @@ async function main() {
     description: `A task management tool that helps humans and agents collaborate.
 This tool breaks down problems into atomic tasks step by step, recording them in a markdown file to facilitate task completion.`,
   });
-  const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  const taskFilePath = path.join(__dirname, "..", "task.md");
+  const taskFilePath = path.join("/tmp/todo-mcp/", "task.md");
 
   useTaskManagementTool(server, taskFilePath);
 
