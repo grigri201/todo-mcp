@@ -1,14 +1,11 @@
 {
-	"mcpServers": {
-		"task-service": {
-			"command": "bun",
-			"args": [
-				"run",
-				"~/repos/todo-mcp/src/index.ts"
-			],
-			"env": {
-				"TASK_FILE_PATH": "~/repos/todo-mcp/task.md"
-			}
-		}
-	}
+        "mcpServers": {
+                "task-service": {
+                        "command": "bun",
+                        "args": [
+                                "run",
+                                "~/repos/todo-mcp/src/index.ts"
+                        ]
+                }
+        }
 }

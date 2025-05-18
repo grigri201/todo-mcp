@@ -10,8 +10,7 @@ async function main() {
     description: `A task management tool that helps humans and agents collaborate.
 This tool breaks down problems into atomic tasks step by step, recording them in a markdown file to facilitate task completion.`,
   });
-  const defaultFilePath = path.join(process.cwd(), "task.md");
-  const taskFilePath = process.env.TASK_FILE_PATH || defaultFilePath;
+  const taskFilePath = path.join("/tmp/todo-mcp/", "task.md");
 
   useTaskManagementTool(server, taskFilePath);
 
