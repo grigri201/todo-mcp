@@ -146,10 +146,6 @@ async function find(
   }
 }
 
-// We will implement findAndReplace next.
-// The find function as described find(path: string, content: string) seems more like a utility
-// that would be part of the findAndReplace logic or a separate utility.
-// For now, let's focus on findAndReplace.
 
 export type { FilePatch };
 export {
