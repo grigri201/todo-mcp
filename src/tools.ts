@@ -3,6 +3,15 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { findAndReplace, find } from "./file-search-replace";
 import * as fs from "fs/promises";
 
+// Ensure the task file exists, create if not
+async function ensureTaskFile(filePath: string) {
+  try {
+    await fs.access(filePath);
+  } catch {
+    await fs.writeFile(filePath, "");
+  }
+}
+
 export function useTaskManagementTool(server: McpServer, filePath: string) {
   server.tool(
     "manage-task",
@@ -51,6 +60,8 @@ You should:
       edited_text: z.string(),
     },
     async (params) => {
+      await ensureTaskFile(filePath);
+
       const patch = {
         file: filePath,
         from: params.original_text,
@@ -89,6 +100,8 @@ You should:
       title: z.string().optional(),
     },
     async (params) => {
+      await ensureTaskFile(filePath);
+
       if (params.title) {
         // 查找指定 title 的任务及其 subtasks
         try {

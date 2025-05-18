@@ -6,7 +6,9 @@
 				"run",
 				"~/repos/todo-mcp/src/index.ts"
 			],
-			"logStdErr": true
+			"env": {
+				"TASK_FILE_PATH": "~/repos/todo-mcp/task.md"
+			}
 		}
 	}
 }
