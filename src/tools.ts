@@ -1,6 +1,10 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { findAndReplace, find } from "./file-search-replace";
+import {
+  findAndReplace,
+  find,
+  ContentNotFoundError,
+} from "./file-search-replace";
 import * as fs from "fs/promises";
 
 // Ensure the task file exists, create if not
@@ -75,6 +79,14 @@ You should:
             content: [{ type: "text", text: `Task updated: ${params.title}` }],
           };
         } else if (result && result.err) {
+          if (result.err instanceof ContentNotFoundError) {
+            await fs.appendFile(filePath, `${params.edited_text}\n`);
+            return {
+              content: [
+                { type: "text", text: `Task added: ${params.title}` },
+              ],
+            };
+          }
           return {
             content: [{ type: "text", text: `Error: ${result.err.message}` }],
           };
