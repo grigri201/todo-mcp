@@ -4,7 +4,7 @@
                         "command": "bun",
                         "args": [
                                 "run",
-                                "src/index.ts"
+                                "~/repos/todo-mcp/src/index.ts"
                         ]
                 }
         }
