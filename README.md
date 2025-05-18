@@ -21,10 +21,10 @@ This project was created using `bun init` in bun v1.2.7. [Bun](https://bun.sh) i
 Edit a task in the markdown file.
 
 - `title`: task title
-- `original_text`: the text to search for
+- `original_text`: the text to search for. When adding subtasks or updating a task, provide the exact text from the task file (include surrounding context if needed).
 - `edited_text`: the replacement text
 
-If `original_text` cannot be found, `edited_text` will be appended to the end of the task file.
+If `original_text` cannot be found, the content will be appended automatically.
 
 ### get-task
 

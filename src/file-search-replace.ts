@@ -44,6 +44,7 @@ interface FilePatch {
   from: string | RegExp;
   to: string;
   changed?: boolean; // default is false
+  appended?: boolean; // indicates content was appended
   err?: FileNotExistedError | ContentNotFoundError | UnableToModifyFileError;
 }
 
@@ -51,7 +52,11 @@ async function findAndReplace(patches: FilePatch[]): Promise<FilePatch[]> {
   const results: FilePatch[] = [];
 
   for (const patch of patches) {
-    const currentPatch: FilePatch = { ...patch, changed: false }; // Initialize changed to false
+    const currentPatch: FilePatch = {
+      ...patch,
+      changed: false,
+      appended: false,
+    }; // Initialize flags
 
     try {
       // Check if file exists
@@ -70,7 +75,13 @@ async function findAndReplace(patches: FilePatch[]): Promise<FilePatch[]> {
       // Perform search and replace
       if (typeof currentPatch.from === "string") {
         if (!content.includes(currentPatch.from)) {
-          currentPatch.err = new ContentNotFoundError(currentPatch.from);
+          if (!content.endsWith("\n") && content.length > 0) {
+            content += "\n";
+          }
+          content += currentPatch.to;
+          await fs.writeFile(currentPatch.file, content, "utf-8");
+          currentPatch.changed = true;
+          currentPatch.appended = true;
           results.push(currentPatch);
           continue;
         }
@@ -78,7 +89,13 @@ async function findAndReplace(patches: FilePatch[]): Promise<FilePatch[]> {
       } else {
         // RegExp
         if (!currentPatch.from.test(content)) {
-          currentPatch.err = new ContentNotFoundError(currentPatch.from);
+          if (!content.endsWith("\n") && content.length > 0) {
+            content += "\n";
+          }
+          content += currentPatch.to;
+          await fs.writeFile(currentPatch.file, content, "utf-8");
+          currentPatch.changed = true;
+          currentPatch.appended = true;
           results.push(currentPatch);
           continue;
         }
